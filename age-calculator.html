@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Age Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 450px;
+            width: 100%;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 32px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #999;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input::placeholder {
+            color: #ccc;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .calculate-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .calculate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .calculate-btn:active {
+            transform: translateY(0);
+        }
+
+        .reset-btn {
+            background: #f0f0f0;
+            color: #555;
+        }
+
+        .reset-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .results {
+            display: none;
+            background: linear-gradient(135deg, #f5f7fa 0%, #f0f4f8 100%);
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #667eea;
+        }
+
+        .results.show {
+            display: block;
+            animation: slideIn 0.4s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-title {
+            color: #667eea;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .age-display {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .age-item {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .age-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .age-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .error {
+            background-color: #fee;
+            color: #c33;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: none;
+            border-left: 4px solid #c33;
+        }
+
+        .error.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+        }
+
+        .footer h3 {
+            color: #333;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .footer p {
+            color: #999;
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .footer a {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        .footer a:hover {
+            color: #764ba2;
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .age-display {
+                grid-template-columns: 1fr;
+            }
+
+            .input-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Age Calculator</h1>
+        <p class="subtitle">Find out exactly how old you are</p>
+
+        <div class="error" id="errorMsg"></div>
+
+        <form id="ageForm" onsubmit="calculateAge(event)">
+            <div class="form-group">
+                <label>Your Birth Date</label>
+                <div class="input-row">
+                    <input type="number" id="year" placeholder="YYYY" min="1900" max="2099" required>
+                    <input type="number" id="month" placeholder="MM" min="1" max="12" required>
+                    <input type="number" id="day" placeholder="DD" min="1" max="31" required>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button type="submit" class="calculate-btn">Calculate Age</button>
+                <button type="button" class="reset-btn" onclick="resetForm()">Reset</button>
+            </div>
+        </form>
+
+        <div class="results" id="results">
+            <div class="result-title">Your Age Is</div>
+            <div class="age-display">
+                <div class="age-item">
+                    <div class="age-value" id="years">0</div>
+                    <div class="age-label">Years</div>
+                </div>
+                <div class="age-item">
+                    <div class="age-value" id="months">0</div>
+                    <div class="age-label">Months</div>
+                </div>
+                <div class="age-item">
+                    <div class="age-value" id="days">0</div>
+                    <div class="age-label">Days</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <h3>Manish Kumar</h3>
+            <p>manishkumardudy2621@gmail.com</p>
+            <a href="https://digitalheroesco.com">Built for Digital Heroes</a>
+        </div>
+    </div>
+
+    <script>
+        function calculateAge(event) {
+            event.preventDefault();
+            hideError();
+
+            const year = parseInt(document.getElementById('year').value);
+            const month = parseInt(document.getElementById('month').value);
+            const day = parseInt(document.getElementById('day').value);
+
+            // Validate input
+            if (!year || !month || !day) {
+                showError('Please enter all date fields');
+                return;
+            }
+
+            // Create birth date
+            let birthDate;
+            try {
+                birthDate = new Date(year, month - 1, day);
+                
+                // Validate the date is real (e.g., Feb 30 doesn't exist)
+                if (birthDate.getFullYear() !== year || 
+                    birthDate.getMonth() !== month - 1 || 
+                    birthDate.getDate() !== day) {
+                    showError('Please enter a valid date');
+                    return;
+                }
+            } catch (e) {
+                showError('Please enter a valid date');
+                return;
+            }
+
+            const currentDate = new Date();
+
+            // Check if birth date is in the future
+            if (birthDate > currentDate) {
+                showError('Birth date cannot be in the future');
+                return;
+            }
+
+            // Calculate age
+            let years = currentDate.getFullYear() - birthDate.getFullYear();
+            let months = currentDate.getMonth() - birthDate.getMonth();
+            let days = currentDate.getDate() - birthDate.getDate();
+
+            // Adjust for negative days
+            if (days < 0) {
+                months--;
+                const prevMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+                days += prevMonth.getDate();
+            }
+
+            // Adjust for negative months
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+
+            // Display results
+            document.getElementById('years').textContent = years;
+            document.getElementById('months').textContent = months;
+            document.getElementById('days').textContent = days;
+            document.getElementById('results').classList.add('show');
+        }
+
+        function resetForm() {
+            document.getElementById('ageForm').reset();
+            document.getElementById('results').classList.remove('show');
+            hideError();
+        }
+
+        function showError(message) {
+            const errorMsg = document.getElementById('errorMsg');
+            errorMsg.textContent = message;
+            errorMsg.classList.add('show');
+        }
+
+        function hideError() {
+            document.getElementById('errorMsg').classList.remove('show');
+        }
+
+        // Allow Enter key to submit
+        document.getElementById('ageForm').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                calculateAge(e);
+            }
+        });
+    </script>
+</body>
+</html>
